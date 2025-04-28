@@ -14,9 +14,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8000';
-const SPOTIFY_TOKEN = 'YOUR_SPOTIFY_ACCESS_TOKEN'; // Replace with valid token
-const USER_ID = 'YOUR_SPOTIFY_USER_ID'; // Replace with Spotify user ID
+const BASE_URL = 'http://127.0.0.1:8000'; 
+const SPOTIFY_TOKEN = 'YOUR_SPOTIFY_ACCESS_TOKEN'; 
+const USER_ID = 'YOUR_SPOTIFY_USER_ID'; 
 
 // HomeScreen Component
 const HomeScreen = ({ navigation }) => {
