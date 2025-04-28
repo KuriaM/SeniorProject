@@ -26,13 +26,12 @@ SPOTIFY_API_BASE = "https://api.spotify.com/v1"
 
 
 def get_spotify_data(endpoint, token, params=None):
-    """
-    Fetches data from the Spotify API. Refreshes token if expired.
-    """
     headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get(f"https://api.spotify.com/v1{endpoint}", headers=headers, params=params)
-
+    response = requests.get(f"{SPOTIFY_API_BASE}{endpoint}", headers=headers, params=params)
+    if response.status_code != 200:
+        print("Spotify API Error:", response.json())
     return response.json()
+
 
 
 @app.get("/top-artists")
@@ -113,33 +112,7 @@ def refresh_access_token():
         return None
 
 
-
-def save_top_items_to_excel(token):
-    # Fetch Top Songs and Artists
-    top_songs = get_spotify_data("/me/top/tracks", token, {"time_range": "short_term"}).get("items", [])
-    top_artists = get_spotify_data("/me/top/artists", token, {"time_range": "short_term"}).get("items", [])
-
-    # Convert to DataFrame
-    songs_df = pd.DataFrame({
-        "Rank": range(1, len(top_songs) + 1),
-        "Song Name": [song["name"] for song in top_songs],
-        "Artist": [song["artists"][0]["name"] for song in top_songs]
-    })
-
-    artists_df = pd.DataFrame({
-        "Rank": range(1, len(top_artists) + 1),
-        "Artist Name": [artist["name"] for artist in top_artists]
-    })
-
-    # Save to Excel file
-    with pd.ExcelWriter("spotify_top_items.xlsx") as writer:
-        songs_df.to_excel(writer, sheet_name="Top Songs", index=False)
-        artists_df.to_excel(writer, sheet_name="Top Artists", index=False)
-
-    print("Data saved to 'spotify_top_items.xlsx'")
-
 if __name__ == "__main__":
     TEST_TOKEN = "BQBHnPvi8PHDSvh906kfB3CMFQ6LfU4sxmnlzd4lKlQdKOZv17cW2eWNZ17WeO0gUQuf2TeeTj8P61XNLx5otaCw_5BOgyqBo6TO0GaXaCF7qJ9_WZABAn7lXnFl-mew7UT2xEL7sBxPI5_-WlYZkGG4U9dJ6V3bUcuvjz2SmC1K1jcyw5Aw2wBLbShTsWOpMcXajPnN0aAV8gZdjDZ5UZUKUSCtFnGsIjrKT1rynW8EJOwicTK0ajo8YBQc5ClXUr8Lq9M_1Z8"
 
-    save_top_items_to_excel(TEST_TOKEN)
 
